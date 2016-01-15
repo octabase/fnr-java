@@ -152,7 +152,7 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
     public void testFloat() throws GeneralSecurityException {
         FNRKey key = generateKey(FNRCodec.FLOAT.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
