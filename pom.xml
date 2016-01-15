@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.octa.security</groupId>
 	<artifactId>fnr</artifactId>
@@ -6,7 +7,7 @@
 	<name>FNR Cipher</name>
 	<description>A Java implementation for Flexible Naor and Reingold encryption scheme</description>
 	<url>https://github.com/octabase/fnr-java</url>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -28,8 +29,8 @@
 		<connection>scm:git:git@github.com:octabase/fnr-java.git</connection>
 		<developerConnection>scm:git:git@github.com:octabase/fnr-java.git</developerConnection>
 		<url>git@github.com:octabase/fnr-java.git</url>
-	  <tag>fnr-1.0.0</tag>
-  </scm>
+		<tag>fnr-1.0.0</tag>
+	</scm>
 
 	<build>
 		<plugins>
@@ -42,6 +43,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
 			<!-- cobertura -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -79,6 +81,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -92,6 +95,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -128,6 +132,7 @@
 			<name>Sonatype Nexus Snapshots</name>
 			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Nexus Release Repository</name>
