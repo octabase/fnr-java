@@ -7,7 +7,7 @@
 	<name>FNR Cipher</name>
 	<description>A Java implementation for Flexible Naor and Reingold encryption scheme</description>
 	<url>https://github.com/octabase/fnr-java</url>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<licenses>
 		<license>
@@ -109,6 +109,15 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -130,14 +139,15 @@
 		<snapshotRepository>
 			<id>sonatype-nexus-snapshots</id>
 			<name>Sonatype Nexus Snapshots</name>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Nexus Release Repository</name>
-			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
+
 		<downloadUrl>https://oss.sonatype.org/content/groups/public/io/octa/security</downloadUrl>
 	</distributionManagement>
 </project>
