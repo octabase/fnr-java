@@ -53,8 +53,8 @@ public class FNRCipher {
             throw new NullPointerException("The encodedAesKey parameter cannot be null.");
         }
 
-        if (encodedAesKey.length != 128) {
-            throw new IllegalArgumentException("The encodedAesKey parameter value must be 128 bytes");
+        if (encodedAesKey.length != 16) {
+            throw new IllegalArgumentException("The encodedAesKey parameter value must be 128 bit (16 bytes)");
         }
 
         if (numBits < 1 || numBits > 128) {

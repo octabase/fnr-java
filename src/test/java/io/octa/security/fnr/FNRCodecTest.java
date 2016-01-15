@@ -167,14 +167,14 @@ public class FNRCodecTest extends FNRTestCase {
         }
     }
     
-    public void testFloatNPSign() throws GeneralSecurityException {
-        FNRKey key = generateKey(FNRCodec.FLOAT_NP_SIGN.getRequiredKeyNumBits());
+    public void testFloatNPSignExp() throws GeneralSecurityException {
+        FNRKey key = generateKey(FNRCodec.FLOAT_NP_SIGN_EXP.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
 
         for (float i = -5; i < 5; i += 0.25) {
-            float encrypted = FNRCipher.encrypt(FNRCodec.FLOAT_NP_SIGN, key, tweak, i);
+            float encrypted = FNRCipher.encrypt(FNRCodec.FLOAT_NP_SIGN_EXP, key, tweak, i);
             
-            float decrypted = FNRCipher.decrypt(FNRCodec.FLOAT_NP_SIGN, key, tweak, encrypted);
+            float decrypted = FNRCipher.decrypt(FNRCodec.FLOAT_NP_SIGN_EXP, key, tweak, encrypted);
             assertEquals(i, decrypted);
         }
     }
@@ -219,14 +219,14 @@ public class FNRCodecTest extends FNRTestCase {
         }
     }
     
-    public void testDoubleNPSign() throws GeneralSecurityException {
-        FNRKey key = generateKey(FNRCodec.DOUBLE_NP_SIGN.getRequiredKeyNumBits());
+    public void testDoubleNPSignExp() throws GeneralSecurityException {
+        FNRKey key = generateKey(FNRCodec.DOUBLE_NP_SIGN_EXP.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
 
         for (double i = -5; i < 5; i += 0.25) {
-            double encrypted = FNRCipher.encrypt(FNRCodec.DOUBLE_NP_SIGN, key, tweak, i);
+            double encrypted = FNRCipher.encrypt(FNRCodec.DOUBLE_NP_SIGN_EXP, key, tweak, i);
             
-            double decrypted = FNRCipher.decrypt(FNRCodec.DOUBLE_NP_SIGN, key, tweak, encrypted);
+            double decrypted = FNRCipher.decrypt(FNRCodec.DOUBLE_NP_SIGN_EXP, key, tweak, encrypted);
             assertEquals(i, decrypted);
         }
     }

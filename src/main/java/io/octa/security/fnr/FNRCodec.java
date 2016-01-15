@@ -223,11 +223,11 @@ public interface FNRCodec<T> {
 
         @Override
         public int getRequiredKeyNumBits() {
-            return INT.getRequiredKeyNumBits();
+            return 23;
         }
     };
 
-    public static final FNRCodec<Float> FLOAT_NP_SIGN = new FNRCodec<Float>() {
+    public static final FNRCodec<Float> FLOAT_NP_SIGN_EXP = new FNRCodec<Float>() {
         @Override
         public byte[] encode(Float input) {
             return FLOAT.encode(input);
@@ -309,11 +309,11 @@ public interface FNRCodec<T> {
 
         @Override
         public int getRequiredKeyNumBits() {
-            return LONG.getRequiredKeyNumBits();
+            return 52;
         }
     };
 
-    public static final FNRCodec<Double> DOUBLE_NP_SIGN = new FNRCodec<Double>() {
+    public static final FNRCodec<Double> DOUBLE_NP_SIGN_EXP = new FNRCodec<Double>() {
         @Override
         public byte[] encode(Double input) {
             return DOUBLE.encode(input);
