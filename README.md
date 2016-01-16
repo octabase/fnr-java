@@ -28,7 +28,9 @@ The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher
 | Inet6Address | FNRCodec.IPV6       |      |
 > **Note:** All numeric codecs works as little-endian for compatibility to another platforms and preserves sign and exponents as default.
 
-#### Install (Maven)
+
+
+#### Install [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr)
 ```xml
 <dependency>
 	<groupId>io.octa.security</groupId>
