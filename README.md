@@ -78,7 +78,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 | [Reference C implementaion](https://github.com/cisco/libfnr) | OpenSSL               | 573560.582 ops/s | 570522.579 ops/s | OpenSSL uses [CPU AES Extension](https://en.wikipedia.org/wiki/AES_instruction_set)  |
 | FNR Java       | Built-In              | 198160.740 ops/s | 202775.251 ops/s | AES encryption with built-in minimal, optimized cipher |
 | [Java binding for Reference C implementaion](https://github.com/cisco/jfnr) | OpenSSL               | 105766.458 ops/s | 106495.132 ops/s | I think JNI round-trip overhead is cause of bottleneck. |
-| FNR Java       | JCE                   |   8998.094 ops/s |  81175.897 ops/s | AES encryption with standard Java Cryptography Extension |
+| FNR Java       | JCE                   |  82998.094 ops/s |  81175.897 ops/s | AES encryption with standard Java Cryptography Extension |
 > **Note:** Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
 
 FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisco.com). ([Reference C implementaion](https://github.com/cisco/libfnr))
