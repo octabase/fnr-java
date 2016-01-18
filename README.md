@@ -6,9 +6,13 @@ FNR Cipher is a Java implementation for [Flexible Naor and Reingold](http://epri
 
 ---
 
-It's simple. If you give an integer, you get a different integer. This is two-way operation. That means, if you give the different integer and you get the original integer. The FNR algorithm preserves your data size, no expand or shrink.
+It's simple. If you give an integer, you get a encrypted integer. This is two-way operation. That means, if you give the encrypted integer also you get the original integer. The FNR algorithm preserves your data size, no expand, no shrink. All operation space limited by key bit length.
 
-The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher Java library provides some built-in codecs for basic data types encrpytion.
+This method also known as format preserving encryption. FNR algorithm is useful for small data types (up to 128 bits) such as credit card or user ids. (https://en.wikipedia.org/wiki/Format-preserving_encryption)
+
+FNR uses AES-128 internally in each encryption/decryption rounds. This library contains optimized and minimal AES-128 pure Java cipher. It may be a good choise instead of Java Cryptography Extension. This library don't have any dependencies, it fits for Andorid.
+
+This library provides some built-in codecs for basic data types encryption.
 
 ----
 
@@ -19,16 +23,14 @@ The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher
 | Short        | FNRCodec.SHORT      | NP_SIGN codec not preserve sign.                   |
 | Character    | FNRCodec.CHAR       | NP_SIGN codec not preserve sign.                   |
 | Integer      | FNRCodec.INT        | NP_SIGN codec not preserve sign.                   |
-| Float        | FNRCodec.FLOAT      | NP_SIGN codec not preserve sign.                   |
-| Long         | FNRCodec.LONG       | NP_SIGN_EXP codec not preserve sign and exponent.  |
+| Float        | FNRCodec.FLOAT      | NP_SIGN_EXP codec not preserve sign and exponent.  |
+| Long         | FNRCodec.LONG       | NP_SIGN codec not preserve sign.                   |
 | Double       | FNRCodec.DOUBLE     | NP_SIGN_EXP codec not preserve sign and exponent.  |
-| BigInteger   | FNRCodec.BIGINT_128 | The acceptable value range is -2^127 to 2^127-1 or 0 to 2^128-1 |
+| BigInteger   | FNRCodec.BIGINT_128 | The acceptable value range are -2^127 to 2^127-1 or 0 to 2^128-1 |
 | Date         | FNRCodec.DATE       | -      |
 | Inet4Address | FNRCodec.IPV4       | -      |
-| Inet6Address | FNRCodec.IPV6       |      |
-> **Note:** All numeric codecs works as little-endian for compatibility to another platforms and preserves sign and exponents as default.
-
-
+| Inet6Address | FNRCodec.IPV6       |        |
+> **Note:** All numeric codecs run as litte-endian for compatibiliy with other platform like C or Go and preserve sign and exponents as default.
 
 #### Install [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr)
 ```xml
@@ -78,7 +80,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 | :------------- | :-------------------- | ---------------: | ---------------: | :----- |
 | [Reference C implementaion](https://github.com/cisco/libfnr) | OpenSSL               | 229141.720 ops/s | 230386.135 ops/s | OpenSSL uses [CPU AES Extension](https://en.wikipedia.org/wiki/AES_instruction_set)  |
 | FNR Java       | Built-In              | 198160.740 ops/s | 202775.251 ops/s | AES encryption with built-in minimal, optimized cipher |
-| [Java binding for Reference C implementaion](https://github.com/cisco/jfnr) | OpenSSL               | 105766.458 ops/s | 106495.132 ops/s | I think JNI round-trip overhead is cause of bottleneck. |
+| [Java binding for Reference C implementaion](https://github.com/cisco/jfnr) | OpenSSL               | 105766.458 ops/s | 106495.132 ops/s | I think the cause of bottleneck is JNI round-trip overhead. |
 | FNR Java       | JCE                   |  82998.094 ops/s |  81175.897 ops/s | AES encryption with standard Java Cryptography Extension |
 
 > Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
