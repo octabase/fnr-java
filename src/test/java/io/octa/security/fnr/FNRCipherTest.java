@@ -31,6 +31,9 @@ package io.octa.security.fnr;
 
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.Random;
+
+import com.cisco.fnr.FNR;
 
 public class FNRCipherTest extends FNRTestCase {
     public void testBitLengths() throws GeneralSecurityException {
@@ -65,6 +68,49 @@ public class FNRCipherTest extends FNRTestCase {
             assertEquals(encrypted.length, decrypted.length);
 
             assertTrue(Arrays.equals(test, decrypted));
+        }
+    }
+
+    public void testNativeCompability() throws GeneralSecurityException {
+        if (!System.getProperty("os.name").toLowerCase().startsWith("linux") || !System.getProperty("os.arch").contains("64")) {
+            return;
+        }
+
+        Random rand = new Random();
+        
+        byte[] aes128Key = randomAesKey();
+
+        String tweakValue = "tweak";
+        
+        byte test[] = new byte[128 / 8];
+        
+        for (int i = 0; i < 128; i++) {
+            Arrays.fill(test, (byte) 0x00);
+
+            int j = 0;
+            for (; j < (i / 8); j++) {
+                test[j] = (byte) rand.nextInt(255);
+            }
+
+            test[j] = (byte) (0xFF >> (7 - (i % 8)));
+
+            FNRKey key = new FNRKey(aes128Key, i + 1, false);
+            FNRTweak tweak = key.generateTweak(tweakValue);
+            
+            FNRKey keyBuiltIn = new FNRKey(aes128Key, i + 1, true);
+            FNRTweak tweakBuiltIn = keyBuiltIn.generateTweak(tweakValue);
+
+            assertTrue(Arrays.equals(tweak.get(), tweakBuiltIn.get()));
+
+            byte encrypted[] = FNRCipher.encrypt(key, tweak, test);
+            byte encryptedBuiltIn[] = FNRCipher.encrypt(keyBuiltIn, tweakBuiltIn, test);
+
+            assertTrue(Arrays.equals(encrypted, encryptedBuiltIn));
+
+            FNR jnaCipher = new FNR(aes128Key, tweakValue, i + 1);
+            byte encryptedJNA[] = jnaCipher.encrypt(test);
+
+            assertTrue(Arrays.equals(encrypted, encryptedJNA));
         }
     }
 }
