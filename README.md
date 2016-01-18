@@ -8,7 +8,7 @@ FNR Cipher is a Java implementation for [Flexible Naor and Reingold](http://epri
 
 It's simple. If you give an integer, you get a encrypted integer. This is two-way operation. That means, if you give the encrypted integer also you get the original integer. The FNR algorithm preserves your data size, no expand, no shrink. All operation space limited by key bit length.
 
-This method also known as format preserving encryption. FNR algorithm is useful for small data types (up to 128 bits) such as credit card or user ids. (https://en.wikipedia.org/wiki/Format-preserving_encryption)
+This method also known as [format preserving encryption](https://en.wikipedia.org/wiki/Format-preserving_encryption). FNR algorithm is useful for small data types (up to 128 bits) such as credit card or user ids.
 
 FNR uses AES-128 internally in each encryption/decryption rounds. This library contains optimized and minimal AES-128 pure Java cipher. It may be a good choise instead of Java Cryptography Extension. This library don't have any dependencies, it fits for Andorid.
 
@@ -76,7 +76,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 ```
 
 #### Performance
-| Library/Method | AES Encryption Method | Encryption       | Decryption       | Notes  |
+| Library        | AES Encryption Method | Encryption       | Decryption       | Notes  |
 | :------------- | :-------------------- | ---------------: | ---------------: | :----- |
 | [Reference C implementaion](https://github.com/cisco/libfnr) | OpenSSL               | 229141.720 ops/s | 230386.135 ops/s | OpenSSL uses [CPU AES Extension](https://en.wikipedia.org/wiki/AES_instruction_set)  |
 | FNR Java       | Built-In              | 198160.740 ops/s | 202775.251 ops/s | AES encryption with built-in minimal, optimized cipher |
