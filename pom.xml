@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.octa.security</groupId>
 	<artifactId>fnr</artifactId>
@@ -99,7 +100,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 				<configuration>
-				<tagNameFormat>v@{project.version}</tagNameFormat>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -122,6 +123,20 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
 			<version>4.1.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>1.11.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<version>1.11.3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
