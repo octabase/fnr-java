@@ -33,9 +33,41 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.junit.Assume;
+import org.junit.AssumptionViolatedException;
+import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
+
 import com.cisco.fnr.FNR;
 
+@RunWith(FNRCipherTest.FNRCipherTestRunner.class)
 public class FNRCipherTest extends FNRTestCase {
+    public static class FNRCipherTestRunner extends BlockJUnit4ClassRunner {
+        public FNRCipherTestRunner(Class<?> klass) throws InitializationError {
+            super(klass);
+        }
+
+        @Override
+        protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+            Description description = describeChild(method);
+            if (isIgnored(method)) {
+                notifier.fireTestIgnored(description);
+            } else {
+                try {
+                    runLeaf(methodBlock(method), description, notifier);
+                } catch (AssumptionViolatedException ex) {
+                    notifier.fireTestIgnored(description);
+                }
+            }
+        }
+    }
+    
+    @Test
     public void testBitLengths() throws GeneralSecurityException {
         byte test[] = new byte[128 / 8];
 
@@ -71,10 +103,9 @@ public class FNRCipherTest extends FNRTestCase {
         }
     }
 
+    @Test
     public void testNativeCompability() throws GeneralSecurityException {
-        if (!System.getProperty("os.name").toLowerCase().startsWith("linux") || !System.getProperty("os.arch").contains("64")) {
-            return;
-        }
+        Assume.assumeTrue(System.getProperty("os.name").toLowerCase().startsWith("linux") && System.getProperty("os.arch").contains("64"));
 
         Random rand = new Random();
         
