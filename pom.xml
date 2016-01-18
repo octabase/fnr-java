@@ -7,7 +7,7 @@
 	<name>FNR Cipher</name>
 	<description>A Java implementation for Flexible Naor and Reingold encryption scheme</description>
 	<url>https://github.com/octabase/fnr-java</url>
-	<version>1.1.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -29,6 +29,7 @@
 		<connection>scm:git:git@github.com:octabase/fnr-java.git</connection>
 		<developerConnection>scm:git:git@github.com:octabase/fnr-java.git</developerConnection>
 		<url>git@github.com:octabase/fnr-java.git</url>
+		<tag>v1.0.1</tag>
 	</scm>
 
 	<build>
@@ -99,7 +100,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 				<configuration>
-					<tagNameFormat>v@{project.version}</tagNameFormat>
+				<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
 		</plugins>
