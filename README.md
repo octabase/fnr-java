@@ -38,7 +38,9 @@ The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher
 	<version>1.0.0</version>
 </dependency>
 ```
+
 #### Usage
+```java
 String passphrase = "this is a password";
 String salt = "this is a salt value"; // for built-in PBKDF2 key generation.
 
@@ -78,21 +80,23 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 | FNR Java       | Built-In              | 198160.740 ops/s | 202775.251 ops/s | AES encryption with built-in minimal, optimized cipher |
 | [Java binding for Reference C implementaion](https://github.com/cisco/jfnr) | OpenSSL               | 105766.458 ops/s | 106495.132 ops/s | I think JNI round-trip overhead is cause of bottleneck. |
 | FNR Java       | JCE                   |  82998.094 ops/s |  81175.897 ops/s | AES encryption with standard Java Cryptography Extension |
+
 > Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
 >
 > Java bench:
+> ```
+> JMH 1.11.3 (released 3 days ago)
+> VM version: JDK 1.8.0_66, VM 25.66-b17
+> VM invoker: /usr/lib/jvm/java-8-oracle/jre/bin/java
+> VM options: <none>
+> Warmup: 5 iterations, 1 s each
+> Measurement: 5 iterations, 1 s each
+> Timeout: 10 min per iteration
+> Threads: 1 thread, will synchronize iterations
+> Benchmark mode: Throughput, ops/time
+> ```
 >
-> # JMH 1.11.3 (released 3 days ago)
-> # VM version: JDK 1.8.0_66, VM 25.66-b17
-> # VM invoker: /usr/lib/jvm/java-8-oracle/jre/bin/java
-> # VM options: <none>
-> # Warmup: 5 iterations, 1 s each
-> # Measurement: 5 iterations, 1 s each
-> # Timeout: 10 min per iteration
-> # Threads: 1 thread, will synchronize iterations
-> # Benchmark mode: Throughput, ops/time
->
-> C Bench: GCC compiles with -O2 and use OpenSSL 1.0.2d
+> C Bench: ```GCC compiles with -O2 and use OpenSSL 1.0.2d```
  
 
 
