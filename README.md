@@ -83,7 +83,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 
 > Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
 >
-> Java bench:
+> Java Benchmark: [FNRCipherBenchmarkTest.java](https://github.com/octabase/fnr-java/blob/master/src/test/java/io/octa/security/fnr/FNRCipherBenchmarkTest.java)
 > ```
 > JMH 1.11.3 (released 3 days ago)
 > VM version: JDK 1.8.0_66, VM 25.66-b17
@@ -96,7 +96,10 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 > Benchmark mode: Throughput, ops/time
 > ```
 >
-> C Bench: ```GCC compiles with -O2 and use OpenSSL 1.0.2d```
+> C Benchmark: [bench.c](https://github.com/cisco/libfnr/blob/master/test/bench.c)
+> ```
+> GCC compiles with -O2 and use OpenSSL 1.0.2d
+> ```
  
 
 
