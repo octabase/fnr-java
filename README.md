@@ -35,7 +35,7 @@ The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher
 <dependency>
 	<groupId>io.octa.security</groupId>
 	<artifactId>fnr</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 </dependency>
 ```
 
