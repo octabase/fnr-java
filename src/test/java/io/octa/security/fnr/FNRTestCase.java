@@ -35,7 +35,7 @@ import java.security.SecureRandom;
 import junit.framework.TestCase;
 
 abstract class FNRTestCase extends TestCase {
-    protected FNRKey generateKey(int numBits) throws GeneralSecurityException {
+    protected byte[] randomAesKey() throws GeneralSecurityException {
         SecureRandom rand = new SecureRandom();
 
         byte salt[] = new byte[16];
@@ -44,6 +44,6 @@ abstract class FNRTestCase extends TestCase {
         rand.nextBytes(salt);
         rand.nextBytes(passphrase);
 
-        return FNRCipher.createKeyWithPBKDF2(passphrase, salt, numBits);
+        return FNRUtils.createAes128KeyWithPBKDF2(passphrase, salt);
     }
 }

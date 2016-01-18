@@ -35,7 +35,7 @@ import java.util.Arrays;
 public class FNRCipherTest extends FNRTestCase {
     public void testBitLengths() throws GeneralSecurityException {
         byte test[] = new byte[128 / 8];
-        
+
         for (int i = 0; i < 128; i++) {
             Arrays.fill(test, (byte) 0x00);
 
@@ -46,11 +46,11 @@ public class FNRCipherTest extends FNRTestCase {
 
             test[j] = (byte) (0xFF >> (7 - (i % 8)));
 
-            FNRKey key = generateKey(i + 1);
+            FNRKey key = new FNRKey(randomAesKey(), i + 1);
             FNRTweak tweak = key.generateTweak("alpha");
-            
+
             byte encrypted[] = FNRCipher.encrypt(key, tweak, test);
-            
+
             assertEquals(test.length, encrypted.length);
 
             byte bitTest[] = new byte[encrypted.length];

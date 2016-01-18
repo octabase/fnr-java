@@ -39,13 +39,13 @@ The FNR algorithm is useful for small data types up to 128 bits data. FNR Cipher
 </dependency>
 ```
 #### Usage
-```java
 String passphrase = "this is a password";
 String salt = "this is a salt value"; // for built-in PBKDF2 key generation.
 
+byte[] aesKey = FNRUtils.createAes128KeyWithPBKDF2(passphrase, salt);
+
 // Integer encryption
-int numBits = FNRCodec.INT.getRequiredKeyNumBits();
-FNRKey key = FNRCipher.createKeyWithPBKDF2(passphrase, salt, numBits);
+FNRKey key = new FNRKey(aesKey, FNRCodec.INT.getRequiredKeyNumBits());
 FNRTweak tweak = key.generateTweak("this is a tweak value");
         
 int raw = 42;
@@ -58,8 +58,7 @@ System.out.println("encrypted: " + encrypted); // prints 1432569698
 System.out.println("decrypted: " + decrypted); // prints 42
 
 // IP encryption
-numBits = FNRCodec.IPV4.getRequiredKeyNumBits();
-key = FNRCipher.createKeyWithPBKDF2(passphrase, salt, numBits);
+key = new FNRKey(aesKey, FNRCodec.IPV4.getRequiredKeyNumBits());
 tweak = key.generateTweak("this is a tweak value");
 
 Inet4Address rawIP = (Inet4Address) Inet4Address.getByName("8.4.4.2");
@@ -75,11 +74,27 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 #### Performance
 | Library/Method | AES Encryption Method | Encryption       | Decryption       | Notes  |
 | :------------- | :-------------------- | ---------------: | ---------------: | :----- |
-| [Reference C implementaion](https://github.com/cisco/libfnr) | OpenSSL               | 573560.582 ops/s | 570522.579 ops/s | OpenSSL uses [CPU AES Extension](https://en.wikipedia.org/wiki/AES_instruction_set)  |
+| [Reference C implementaion](https://github.com/cisco/libfnr) | OpenSSL               | 229141.720 ops/s | 230386.135 ops/s | OpenSSL uses [CPU AES Extension](https://en.wikipedia.org/wiki/AES_instruction_set)  |
 | FNR Java       | Built-In              | 198160.740 ops/s | 202775.251 ops/s | AES encryption with built-in minimal, optimized cipher |
 | [Java binding for Reference C implementaion](https://github.com/cisco/jfnr) | OpenSSL               | 105766.458 ops/s | 106495.132 ops/s | I think JNI round-trip overhead is cause of bottleneck. |
 | FNR Java       | JCE                   |  82998.094 ops/s |  81175.897 ops/s | AES encryption with standard Java Cryptography Extension |
-> **Note:** Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
+> Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.
+>
+> Java bench:
+>
+> # JMH 1.11.3 (released 3 days ago)
+> # VM version: JDK 1.8.0_66, VM 25.66-b17
+> # VM invoker: /usr/lib/jvm/java-8-oracle/jre/bin/java
+> # VM options: <none>
+> # Warmup: 5 iterations, 1 s each
+> # Measurement: 5 iterations, 1 s each
+> # Timeout: 10 min per iteration
+> # Threads: 1 thread, will synchronize iterations
+> # Benchmark mode: Throughput, ops/time
+>
+> C Bench: GCC compiles with -O2 and use OpenSSL 1.0.2d
+ 
+
 
 FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisco.com). ([Reference C implementaion](https://github.com/cisco/libfnr))
 

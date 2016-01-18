@@ -29,7 +29,17 @@
 
 package io.octa.security.fnr;
 
-class FNRUtils {
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+public class FNRUtils {
+    private FNRUtils() {
+        
+    }
+    
     final static void reverse(byte[] data) {
         byte swap;
 
@@ -38,5 +48,40 @@ class FNRUtils {
             data[i] = data[data.length - i - 1];
             data[data.length - i - 1] = swap;
         }
+    }
+    
+    public static byte[] createAes128KeyWithPBKDF2(String passphrase, String salt) throws GeneralSecurityException {
+        if (passphrase == null || passphrase.length() == 0) {
+            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
+        }
+        
+        if (salt == null || salt.length() == 0) {
+            throw new NullPointerException("The salt parameter cannot be null or empty.");
+        }
+
+        return createAes128KeyWithPBKDF2(passphrase.getBytes(), salt.getBytes());
+    }
+    
+    public static byte[] createAes128KeyWithPBKDF2(final byte[] passphrase, final byte[] salt) throws GeneralSecurityException {
+        if (passphrase == null || passphrase.length == 0) {
+            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
+        }
+        
+        if (salt == null || salt.length == 0) {
+            throw new NullPointerException("The salt parameter cannot be null or empty.");
+        }
+
+        char[] passChars = new char[passphrase.length];
+
+        for (int i = 0; i < passphrase.length; i++) {
+            passChars[i] = (char) passphrase[i];
+        }
+
+        PBEKeySpec keySpec = new PBEKeySpec(passChars, salt == null ? new byte[0] : salt, 1000, 128);
+        Arrays.fill(passChars, (char) 0);
+
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+        return keyFactory.generateSecret(keySpec).getEncoded();
     }
 }

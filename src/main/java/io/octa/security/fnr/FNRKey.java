@@ -30,36 +30,42 @@
 package io.octa.security.fnr;
 
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 public class FNRKey {
+    public final static boolean DEFAULT_USE_BUILT_IN_AES_ENCRYPTION = false;
+
     private final int fullBytes;
     private final byte finalMask;
     private final int fullElements;
     private final byte finalElementMask;
     private final int numBits;
-    private final Key aesKey;
     private final int redIndex;
     private final int greenIndex;
     private final byte[] vector;
+    private final Key aesKey;
     private final int elementsPerRow;
+    private final int[][] builtInAesKey;
 
-    /* package-access */ FNRKey(final byte[] encodedAesKey, int numBits) throws GeneralSecurityException {
-        if (numBits < 1 || numBits > 128) {
-            throw new IllegalArgumentException();
+    public FNRKey(final byte[] aes128Key, int numBits) throws GeneralSecurityException {
+        this(aes128Key, numBits, DEFAULT_USE_BUILT_IN_AES_ENCRYPTION);
+    }
+
+    public FNRKey(final byte[] aes128Key, int numBits, boolean useBuiltInAesEncryption) throws GeneralSecurityException {
+        if (aes128Key == null) {
+            throw new NullPointerException("The aes128Key parameter cannot be null.");
         }
 
-        if (encodedAesKey == null || encodedAesKey.length != 16) {
-            throw new InvalidKeyException();
+        if (aes128Key.length != 16) {
+            throw new IllegalArgumentException("The aes128Key parameter value must be 128 bit (16 bytes)");
+        }
+
+        if (numBits < 1 || numBits > 128) {
+            throw new IllegalArgumentException("The numBits parameter value must be range of 1 to 128");
         }
 
         this.elementsPerRow = countOfElementsPerRow(numBits);
@@ -68,10 +74,18 @@ public class FNRKey {
         this.finalMask = (byte) (0xFF & ((1 << ((numBits + 7) % 8 + 1)) - 1));
         this.finalElementMask = this.finalMask;
         this.numBits = numBits;
-        this.aesKey = new SecretKeySpec(encodedAesKey, "AES");
         this.vector = new byte[2 * (this.elementsPerRow * (numBits + 1))];
         this.redIndex = 0;
         this.greenIndex = this.elementsPerRow * (numBits + 1);
+
+        if (useBuiltInAesEncryption) {
+            this.aesKey = null;
+            this.builtInAesKey = AES128Encryption.generateEncryptionKey(aes128Key);
+        } else {
+            this.aesKey = new SecretKeySpec(aes128Key, "AES");
+            this.builtInAesKey = null;
+        }
+
         this.expandRedGreen();
     }
 
@@ -95,6 +109,11 @@ public class FNRKey {
         
         block[4] = (byte) this.numBits;
         
+        Cipher cipher = null;
+        if (builtInAesKey == null) {
+            cipher = Cipher.getInstance("AES/ECB/NoPadding");
+        }
+
         int n = 5;
         int i = 0;
         do {
@@ -105,12 +124,14 @@ public class FNRKey {
 
             block[FNRCipher.BLOCK_SIZE - 1] = FNRCipher.TWEAK_MARKER;
 
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, this.aesKey);
-            byte[] encrypted = cipher.doFinal(block);
-            
-            System.arraycopy(encrypted, 0, block, 0, block.length);
-            Arrays.fill(encrypted, (byte) 0);
+            if (builtInAesKey != null) {
+                AES128Encryption.encrypt(builtInAesKey, block);
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, this.aesKey);
+                byte[] encrypted = cipher.doFinal(block);
+                System.arraycopy(encrypted, 0, block, 0, block.length);
+                Arrays.fill(encrypted, (byte) 0);
+            };
             
             n = 0;
         } while (tweakLen > 0);
@@ -141,8 +162,8 @@ public class FNRKey {
         }
     }
 
-    private void expandRedGreen() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
-        PWIPStream pwipStream = new PWIPStream(this.aesKey, this.numBits);
+    private void expandRedGreen() throws GeneralSecurityException {
+        PWIPStream pwipStream = new PWIPStream(this.numBits);
 
         GenMatrix genMatrix[] = new GenMatrix[(this.numBits * (this.numBits - 1)) + 1];
         byte bits[] = new byte[128];
@@ -154,7 +175,7 @@ public class FNRKey {
         int index = 0;
         
         for (int i = 0; i < this.numBits; i++) {
-            int firstNonZero = pwipStream.nextBitsNotAllZero(bits, this.numBits - i);
+            int firstNonZero = pwipStream.nextBitsNotAllZero(this, bits, this.numBits - i);
             
             if (firstNonZero > 0) {
                 genMatrix[index].type = GenMatrixType.SWAP;
@@ -175,7 +196,7 @@ public class FNRKey {
             }       
             
             for (int j = 0; j < i; j++) {
-                if (pwipStream.nextBit() != 0) {
+                if (pwipStream.nextBit(this) != 0) {
                     genMatrix[index].type = GenMatrixType.XOR;
                     genMatrix[index].a = (byte) i;
                     genMatrix[index].b = (byte) j;
@@ -225,7 +246,7 @@ public class FNRKey {
                 bitsThisTime = 8;
             }
 
-            this.vector[this.redIndex + (i / 8)] = (byte) pwipStream.nextBits(bitsThisTime);
+            this.vector[this.redIndex + (i / 8)] = (byte) pwipStream.nextBits(this, bitsThisTime);
         }
 
         Arrays.fill(this.vector, this.greenIndex, this.greenIndex + this.elementsPerRow, (byte) 0);
@@ -277,12 +298,16 @@ public class FNRKey {
         return finalElementMask;
     }
 
-    int getNumBits() {
+    public int getNumBits() {
         return numBits;
     }
 
     Key getAesKey() {
         return aesKey;
+    }
+
+    int[][] getBuiltInAesKey() {
+        return builtInAesKey;
     }
 
     int getRedIndex() {

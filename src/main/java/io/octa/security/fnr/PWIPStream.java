@@ -29,33 +29,25 @@
 
 package io.octa.security.fnr;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 class PWIPStream {
-    private Key key;
     private int numBits;
     private int count;
     private int index;
     private int bitCount;
     private byte buffer[] = new byte[FNRCipher.BLOCK_SIZE];
 
-    PWIPStream(Key key, int numBits) {
-        this.key = key;
+    PWIPStream(int numBits) {
         this.numBits = (byte) numBits;
         this.count = 0;
         this.index = FNRCipher.BLOCK_SIZE;
     }
-    
+
     void erase() {
-        this.key = null;
         this.numBits = 0;
         this.count = 0;
         this.index = 0;
@@ -63,7 +55,7 @@ class PWIPStream {
         Arrays.fill(this.buffer, (byte) 0);
     }
     
-    byte nextBit() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    byte nextBit(FNRKey key) throws GeneralSecurityException {
         if (index == FNRCipher.BLOCK_SIZE) {
             byte block[] = new byte[FNRCipher.BLOCK_SIZE];
             
@@ -76,13 +68,20 @@ class PWIPStream {
             block[FNRCipher.BLOCK_SIZE - 2] = (byte) this.numBits;
             block[FNRCipher.BLOCK_SIZE - 1] = FNRCipher.RND_MARKER;
 
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] encrypted = cipher.doFinal(block);
-            Arrays.fill(block, (byte) 0);
-
-            System.arraycopy(encrypted, 0, this.buffer, 0, this.buffer.length);
-            Arrays.fill(encrypted, (byte) 0);
+            if (key.getBuiltInAesKey() != null) {
+                System.arraycopy(block, 0, this.buffer, 0, block.length);
+                Arrays.fill(block, (byte) 0);
+                AES128Encryption.encrypt(key.getBuiltInAesKey(), this.buffer);
+            } else {
+                Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+                cipher.init(Cipher.ENCRYPT_MODE, key.getAesKey());
+                
+                byte[] encrypted = cipher.doFinal(block);
+                Arrays.fill(block, (byte) 0);
+                
+                System.arraycopy(encrypted, 0, this.buffer, 0, this.buffer.length);
+                Arrays.fill(encrypted, (byte) 0);
+            }
 
             index = 0;
             bitCount = 0;
@@ -99,17 +98,17 @@ class PWIPStream {
         return bit;
     }
 
-    int nextBits(int n) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    int nextBits(FNRKey key, int n) throws GeneralSecurityException {
         int result = 0;
 
         for (int i = 0; i < n; i++) {
-            result += nextBit() << i;
+            result += nextBit(key) << i;
         }
         
         return result;
     }
     
-    int nextBitsNotAllZero(byte[] bits, int nBits) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    int nextBitsNotAllZero(FNRKey key, byte[] bits, int nBits) throws GeneralSecurityException {
         if (nBits == 1) {
             bits[0] = 1;
             return 0;
@@ -118,7 +117,7 @@ class PWIPStream {
         int firstNonZero = -1;
         do {
             for (int i = 0; i < nBits; i++) {
-                bits[i] = (byte) nextBit();
+                bits[i] = (byte) nextBit(key);
                 if (firstNonZero < 0 && bits[i] != 0) {
                     firstNonZero = i;
                 }

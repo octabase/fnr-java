@@ -33,8 +33,6 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 public class FNRCipher {
     final static int N_ROUND = 7;
@@ -43,67 +41,9 @@ public class FNRCipher {
     final static byte RND_MARKER = (byte) 0xC0;
     final static byte TWEAK_MARKER = (byte) 0xFF;
     final static byte[] ROUND_CONST = {0x00, 0x03, 0x0c, 0x0f, 0x30, 0x33, 0x3c};
-    
+
     private FNRCipher() {
         
-    }
-
-    public static FNRKey createKeyWithEncodedAesKey(final byte[] encodedAesKey, int numBits) throws GeneralSecurityException {
-        if (encodedAesKey == null) {
-            throw new NullPointerException("The encodedAesKey parameter cannot be null.");
-        }
-
-        if (encodedAesKey.length != 16) {
-            throw new IllegalArgumentException("The encodedAesKey parameter value must be 128 bit (16 bytes)");
-        }
-
-        if (numBits < 1 || numBits > 128) {
-            throw new IllegalArgumentException("The numBits parameter value must be range of 1 to 128");
-        }
-
-        return new FNRKey(encodedAesKey, numBits);
-    }
-
-    public static FNRKey createKeyWithPBKDF2(String passphrase, String salt, int numBits) throws GeneralSecurityException {
-        if (passphrase == null || passphrase.length() == 0) {
-            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
-        }
-        
-        if (salt == null || salt.length() == 0) {
-            throw new NullPointerException("The salt parameter cannot be null or empty.");
-        }
-
-        return createKeyWithPBKDF2(passphrase.getBytes(), salt.getBytes(), numBits);
-    }
-
-    public static FNRKey createKeyWithPBKDF2(final byte[] passphrase, final byte[] salt, int numBits) throws GeneralSecurityException {
-        if (passphrase == null || passphrase.length == 0) {
-            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
-        }
-        
-        if (salt == null || salt.length == 0) {
-            throw new NullPointerException("The salt parameter cannot be null or empty.");
-        }
-
-        if (numBits < 1 || numBits > 128) {
-            throw new IllegalArgumentException("The numBits parameter value must be range of 1 to 128");
-        }
-        
-        char[] passChars = new char[passphrase.length];
-
-        for (int i = 0; i < passphrase.length; i++) {
-            passChars[i] = (char) passphrase[i];
-        }
-
-        PBEKeySpec keySpec = new PBEKeySpec(passChars, salt == null ? new byte[0] : salt, 1000, 128);
-        Arrays.fill(passChars, (char) 0);
-
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-
-        FNRKey fnrKey = new FNRKey(keyFactory.generateSecret(keySpec).getEncoded(), numBits);
-        keySpec.clearPassword();
-
-        return fnrKey;
     }
 
     public static <T> T encrypt(FNRCodec<T> codec, FNRKey key, FNRTweak tweak, T input) throws GeneralSecurityException {
@@ -174,6 +114,11 @@ public class FNRCipher {
         byte block[] = new byte[BLOCK_SIZE];
 
         byte mask = 0x55;
+        
+        Cipher cipher = null;
+        if (key.getBuiltInAesKey() == null) {
+            cipher = Cipher.getInstance("AES/ECB/NoPadding");
+        }
 
         for (i = 0; i < N_ROUND; i++, round += roundInc) {
             System.arraycopy(tweak.get(), 0, block, 0, BLOCK_SIZE - 1);
@@ -187,13 +132,16 @@ public class FNRCipher {
 
             block[j] ^= text[j] & mask & key.getFinalMask();
 
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, key.getAesKey());
-            byte[] encrypted = cipher.doFinal(block);
+            if (key.getBuiltInAesKey() != null) {
+                AES128Encryption.encrypt(key.getBuiltInAesKey(), block);
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, key.getAesKey());
+                byte[] encrypted = cipher.doFinal(block);
+                
+                System.arraycopy(encrypted, 0, block, 0, block.length);
+                Arrays.fill(encrypted, (byte) 0);
+            }
 
-            System.arraycopy(encrypted, 0, block, 0, block.length);
-            Arrays.fill(encrypted, (byte) 0);
-            
             mask ^= 0xFF;
             
             for (j = 0; j <= key.getFullBytes(); j++) {
