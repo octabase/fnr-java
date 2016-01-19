@@ -12,7 +12,7 @@ This method also known as [format preserving encryption](https://en.wikipedia.or
 
 FNR uses AES-128 internally in each encryption/decryption rounds. FNR Java contains optimized and minimal AES-128 pure Java cipher. It may be a good choise instead of Java Cryptography Extension. This library don't have any dependencies, it fits for Andorid.
 
-The FNR Java library is binary compatible with reference C implementation.
+The FNR Java library is [binary compatible](https://github.com/octabase/fnr-java/blob/master/src/test/java/io/octa/security/fnr/FNRCipherTest.java#L106-L146) with [reference C implementation](https://github.com/cisco/libfnr).
 
 FNR Java provides some built-in codecs for basic data types encryption.
 
@@ -107,7 +107,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
  
 
 
-FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisco.com). ([Reference C implementaion](https://github.com/cisco/libfnr))
+FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisco.com).
 
 Java implementation was written by Mehmet Gurevin (mehmet.gurevin@octabase.com)
 
