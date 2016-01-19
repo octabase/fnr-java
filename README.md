@@ -10,7 +10,7 @@ It's simple. If you give an integer, you get a encrypted integer. This is two-wa
 
 This method also known as [format preserving encryption](https://en.wikipedia.org/wiki/Format-preserving_encryption). FNR algorithm is useful for small data types (up to 128 bits) such as credit card or user ids.
 
-FNR uses AES-128 internally in each encryption/decryption rounds. FNR Java contains optimized and minimal AES-128 pure Java cipher. It's may be prefer instead of Java Cryptography Extension in case of performance considerations or JVM limitations. This library don't have any dependencies, it fits for Andorid.
+FNR uses AES-128 internally in each encryption/decryption rounds. FNR Java contains optimized and minimal AES-128 pure Java cipher. It's may be prefer instead of Java Cryptography Extension in case of performance considerations or JVM limitations. This library don't have any dependencies, it fits for Andorid. The JAR file only 43kb.
 
 The FNR Java library is [binary compatible](https://github.com/octabase/fnr-java/blob/master/src/test/java/io/octa/security/fnr/FNRCipherTest.java#L106-L146) with [reference C implementation](https://github.com/cisco/libfnr).
 
