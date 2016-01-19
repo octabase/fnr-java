@@ -102,7 +102,7 @@ System.out.println("decrypted: " + decryptedIP); // prints 8.4.4.2
 >
 > C Benchmark: [bench.c](https://github.com/cisco/libfnr/blob/master/test/bench.c)
 > ```
-> GCC compiles with -O2 and use OpenSSL 1.0.2d
+> GCC v5.2.1 compiles with -O2 and use OpenSSL 1.0.2d
 > ```
  
 
