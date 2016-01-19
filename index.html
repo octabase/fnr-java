@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Fnr-java by octabase</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Fnr-java</h1>
+        <p>A Java implementation for Flexible Naor and Reingold encryption scheme</p>
+
+        <p class="view"><a href="https://github.com/octabase/fnr-java">View the Project on GitHub <small>octabase/fnr-java</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/octabase/fnr-java/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/octabase/fnr-java/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/octabase/fnr-java">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="fnr-cipher" class="anchor" href="#fnr-cipher" aria-hidden="true"><span class="octicon octicon-link"></span></a>FNR Cipher</h1>
+
+<p>FNR Cipher is a Java implementation for <a href="http://eprint.iacr.org/2014/421">Flexible Naor and Reingold</a> encryption scheme.</p>
+
+<p><a href="https://travis-ci.org/octabase/fnr-java"><img src="https://travis-ci.org/octabase/fnr-java.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/octabase/fnr-java?branch=master"><img src="https://coveralls.io/repos/octabase/fnr-java/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a></p>
+
+<hr>
+
+<p>It's simple. If you give an integer, you get a encrypted integer. This is two-way operation. That means, if you give the encrypted integer also you get the original integer. The FNR algorithm preserves your data size, no expand, no shrink. All operation space limited by key bit length.</p>
+
+<p>This method also known as <a href="https://en.wikipedia.org/wiki/Format-preserving_encryption">format preserving encryption</a>. FNR algorithm is useful for small data types (up to 128 bits) such as credit card or user ids.</p>
+
+<p>FNR uses AES-128 internally in each encryption/decryption rounds. FNR Java contains optimized and minimal AES-128 pure Java cipher. It's may be prefer instead of Java Cryptography Extension in case of performance considerations or JVM limitations. This library don't have any dependencies, it fits for Andorid.</p>
+
+<p>The FNR Java library is <a href="https://github.com/octabase/fnr-java/blob/master/src/test/java/io/octa/security/fnr/FNRCipherTest.java#L106-L146">binary compatible</a> with <a href="https://github.com/cisco/libfnr">reference C implementation</a>.</p>
+
+<p>FNR Java provides some built-in codecs for basic data types encryption.</p>
+
+<hr>
+
+<h4>
+<a id="built-in-supported-java-types" class="anchor" href="#built-in-supported-java-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Built-In Supported Java Types:</h4>
+
+<table>
+<thead>
+<tr>
+<th align="left">Java Type</th>
+<th align="left">Codec</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Byte</td>
+<td align="left">FNRCodec.BYTE</td>
+<td align="left">NP_SIGN codec not preserve sign.</td>
+</tr>
+<tr>
+<td align="left">Short</td>
+<td align="left">FNRCodec.SHORT</td>
+<td align="left">NP_SIGN codec not preserve sign.</td>
+</tr>
+<tr>
+<td align="left">Character</td>
+<td align="left">FNRCodec.CHAR</td>
+<td align="left">NP_SIGN codec not preserve sign.</td>
+</tr>
+<tr>
+<td align="left">Integer</td>
+<td align="left">FNRCodec.INT</td>
+<td align="left">NP_SIGN codec not preserve sign.</td>
+</tr>
+<tr>
+<td align="left">Float</td>
+<td align="left">FNRCodec.FLOAT</td>
+<td align="left">NP_SIGN_EXP codec not preserve sign and exponent.</td>
+</tr>
+<tr>
+<td align="left">Long</td>
+<td align="left">FNRCodec.LONG</td>
+<td align="left">NP_SIGN codec not preserve sign.</td>
+</tr>
+<tr>
+<td align="left">Double</td>
+<td align="left">FNRCodec.DOUBLE</td>
+<td align="left">NP_SIGN_EXP codec not preserve sign and exponent.</td>
+</tr>
+<tr>
+<td align="left">BigInteger</td>
+<td align="left">FNRCodec.BIGINT_128</td>
+<td align="left">The acceptable value range are -2^127 to 2^127-1 or 0 to 2^128-1</td>
+</tr>
+<tr>
+<td align="left">Date</td>
+<td align="left">FNRCodec.DATE</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">Inet4Address</td>
+<td align="left">FNRCodec.IPV4</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">Inet6Address</td>
+<td align="left">FNRCodec.IPV6</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p><strong>Note:</strong> All numeric codecs run as litte-endian for compatibiliy with other platform like C or Go and preserve sign and exponents as default.</p>
+</blockquote>
+
+<h4>
+<a id="install-" class="anchor" href="#install-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install <a href="https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr"><img src="https://maven-badges.herokuapp.com/maven-central/io.octa.security/fnr/badge.svg" alt="Maven Central"></a>
+</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;io.octa.security&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;fnr&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;1.0.1&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<h4>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> passphrase <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>this is a password<span class="pl-pds">"</span></span>;
+<span class="pl-smi">String</span> salt <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>this is a salt value<span class="pl-pds">"</span></span>; <span class="pl-c">// for built-in PBKDF2 key generation.</span>
+
+<span class="pl-k">byte</span>[] aesKey <span class="pl-k">=</span> <span class="pl-smi">FNRUtils</span><span class="pl-k">.</span>createAes128KeyWithPBKDF2(passphrase, salt);
+
+<span class="pl-c">// Integer encryption</span>
+<span class="pl-smi">FNRKey</span> key <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">FNRKey</span>(aesKey, <span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>INT</span><span class="pl-k">.</span>getRequiredKeyNumBits());
+<span class="pl-smi">FNRTweak</span> tweak <span class="pl-k">=</span> key<span class="pl-k">.</span>generateTweak(<span class="pl-s"><span class="pl-pds">"</span>this is a tweak value<span class="pl-pds">"</span></span>);
+
+<span class="pl-k">int</span> raw <span class="pl-k">=</span> <span class="pl-c1">42</span>;
+
+<span class="pl-k">int</span> encrypted <span class="pl-k">=</span> <span class="pl-smi">FNRCipher</span><span class="pl-k">.</span>encrypt(<span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>INT</span>, key, tweak, raw);
+<span class="pl-k">int</span> decrypted <span class="pl-k">=</span> <span class="pl-smi">FNRCipher</span><span class="pl-k">.</span>decrypt(<span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>INT</span>, key, tweak, encrypted);
+
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>raw: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> raw);             <span class="pl-c">// prints 42</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>encrypted: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> encrypted); <span class="pl-c">// prints 1432569698</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>decrypted: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> decrypted); <span class="pl-c">// prints 42</span>
+
+<span class="pl-c">// IP encryption</span>
+key <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">FNRKey</span>(aesKey, <span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>IPV4</span><span class="pl-k">.</span>getRequiredKeyNumBits());
+tweak <span class="pl-k">=</span> key<span class="pl-k">.</span>generateTweak(<span class="pl-s"><span class="pl-pds">"</span>this is a tweak value<span class="pl-pds">"</span></span>);
+
+<span class="pl-smi">Inet4Address</span> rawIP <span class="pl-k">=</span> (<span class="pl-smi">Inet4Address</span>) <span class="pl-smi">Inet4Address</span><span class="pl-k">.</span>getByName(<span class="pl-s"><span class="pl-pds">"</span>8.4.4.2<span class="pl-pds">"</span></span>);
+
+<span class="pl-smi">Inet4Address</span> encryptedIP <span class="pl-k">=</span> <span class="pl-smi">FNRCipher</span><span class="pl-k">.</span>encrypt(<span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>IPV4</span>, key, tweak, rawIP);
+<span class="pl-smi">Inet4Address</span> decryptedIP <span class="pl-k">=</span> <span class="pl-smi">FNRCipher</span><span class="pl-k">.</span>decrypt(<span class="pl-smi">FNRCodec</span><span class="pl-c1"><span class="pl-k">.</span>IPV4</span>, key, tweak, encryptedIP);
+
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>raw: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> rawIP);             <span class="pl-c">// prints 8.4.4.2</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>encrypted: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> encryptedIP); <span class="pl-c">// prints 25.123.159.248</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>decrypted: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> decryptedIP); <span class="pl-c">// prints 8.4.4.2</span></pre></div>
+
+<h4>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h4>
+
+<table>
+<thead>
+<tr>
+<th align="left">Library</th>
+<th align="left">AES Encryption Method</th>
+<th align="right">Encryption</th>
+<th align="right">Decryption</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="https://github.com/cisco/libfnr">Reference C implementaion</a></td>
+<td align="left">OpenSSL</td>
+<td align="right">229141.720 ops/s</td>
+<td align="right">230386.135 ops/s</td>
+<td align="left">OpenSSL uses <a href="https://en.wikipedia.org/wiki/AES_instruction_set">CPU AES Extension</a>
+</td>
+</tr>
+<tr>
+<td align="left">FNR Java</td>
+<td align="left">Built-In</td>
+<td align="right">198160.740 ops/s</td>
+<td align="right">202775.251 ops/s</td>
+<td align="left">AES encryption with built-in minimal, optimized cipher</td>
+</tr>
+<tr>
+<td align="left"><a href="https://github.com/cisco/jfnr">Java binding for Reference C implementaion</a></td>
+<td align="left">OpenSSL</td>
+<td align="right">105766.458 ops/s</td>
+<td align="right">106495.132 ops/s</td>
+<td align="left">I think the cause of bottleneck is JNI round-trip overhead.</td>
+</tr>
+<tr>
+<td align="left">FNR Java</td>
+<td align="left">JCE</td>
+<td align="right">82998.094 ops/s</td>
+<td align="right">81175.897 ops/s</td>
+<td align="left">AES encryption with standard Java Cryptography Extension</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>Tested on Intel(R) Core(TM) i7-4700MQ CPU @ 2.40GHz.</p>
+
+<p>Java Benchmark: <a href="https://github.com/octabase/fnr-java/blob/master/src/test/java/io/octa/security/fnr/FNRCipherBenchmarkTest.java">FNRCipherBenchmarkTest.java</a></p>
+
+<pre><code>JMH 1.11.3 (released 3 days ago)
+VM version: JDK 1.8.0_66, VM 25.66-b17
+VM invoker: /usr/lib/jvm/java-8-oracle/jre/bin/java
+VM options: &lt;none&gt;
+Warmup: 5 iterations, 1 s each
+Measurement: 5 iterations, 1 s each
+Timeout: 10 min per iteration
+Threads: 1 thread, will synchronize iterations
+Benchmark mode: Throughput, ops/time
+</code></pre>
+
+<p>C Benchmark: <a href="https://github.com/cisco/libfnr/blob/master/test/bench.c">bench.c</a></p>
+
+<pre><code>GCC v5.2.1 compiles with -O2 and use OpenSSL 1.0.2d
+</code></pre>
+</blockquote>
+
+<p>FNR is designed by Sashank Dara (<a href="mailto:sadara@cisco.com">sadara@cisco.com</a>), Scott Fluhrer (<a href="mailto:sfluhrer@cisco.com">sfluhrer@cisco.com</a>).</p>
+
+<p>Java implementation was written by Mehmet Gurevin (<a href="mailto:mehmet.gurevin@octabase.com">mehmet.gurevin@octabase.com</a>)</p>
+
+<p>Copyright (c) 2015-2016, Octabase, Inc. All Rights Reserved.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/octabase">octabase</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
