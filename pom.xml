@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<name>FNR Cipher</name>
 	<description>A Java implementation for Flexible Naor and Reingold encryption scheme</description>
-	<url>https://github.com/octabase/fnr-java</url>
+	<url>http://octabase.github.io/fnr-java</url>
 	<version>1.0.2-SNAPSHOT</version>
 
 	<licenses>

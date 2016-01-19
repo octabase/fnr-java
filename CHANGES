@@ -1,0 +1,7 @@
+The revision history for Java library io.octa.security.fnr
+
+v1.0.0 2016-01-16
+  * First stable release to central maven repository.
+
+v1.0.1 2016-01-18
+  * Add optimized and minimal pure Java AES-128 cipher as built-in.
