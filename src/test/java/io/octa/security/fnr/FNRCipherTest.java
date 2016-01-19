@@ -29,6 +29,8 @@
 
 package io.octa.security.fnr;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Random;
@@ -101,6 +103,68 @@ public class FNRCipherTest extends FNRTestCase {
 
             assertTrue(Arrays.equals(test, decrypted));
         }
+    }
+    
+    @Test
+    public void fixCoberturaCoverage() throws GeneralSecurityException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        Constructor<?> privateConstructor = FNRCipher.class.getDeclaredConstructors()[0];
+        privateConstructor.setAccessible(true);
+        privateConstructor.newInstance((Object[]) null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testCodecOperateNullCodecGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 2);
+        FNRTweak tweak = key.generateTweak("test");
+
+        FNRCipher.encrypt(null, key, tweak, new Object());
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testCodecOperateNullInputGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 2);
+        FNRTweak tweak = key.generateTweak("test");
+
+        FNRCipher.encrypt(FNRCodec.BOOL, key, tweak, null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCodecOperateWrongKeySizeGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 2);
+        FNRTweak tweak = key.generateTweak("test");
+
+        FNRCipher.encrypt(FNRCodec.BOOL, key, tweak, true);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testOperateNullKeyGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 2);
+        FNRTweak tweak = key.generateTweak("test");
+        
+        FNRCipher.encrypt(null, tweak, new byte[0]);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testCodecOperateNullTweakGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 2);
+
+        FNRCipher.encrypt(key, null, new byte[0]);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testOperateNullInputGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 1);
+        FNRTweak tweak = key.generateTweak("test");
+
+        FNRCipher.encrypt(key, tweak, null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testOperateWrongInputGuard() throws GeneralSecurityException {
+        FNRKey key = new FNRKey(randomAesKey(), 9);
+        FNRTweak tweak = key.generateTweak("test");
+
+        FNRCipher.encrypt(key, tweak, new byte[1]);
     }
 
     @Test

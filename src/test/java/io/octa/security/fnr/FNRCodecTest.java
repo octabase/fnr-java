@@ -36,7 +36,13 @@ import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.Date;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
+
+@RunWith(BlockJUnit4ClassRunner.class)
 public class FNRCodecTest extends FNRTestCase {
+    @Test
     public void testBool() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BOOL.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -48,7 +54,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testByte() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BYTE.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -62,19 +69,21 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testByteNPSign() throws GeneralSecurityException {
-        FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BYTE.getRequiredKeyNumBits());
+        FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BYTE_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
 
         for (byte i = Byte.MIN_VALUE; i < Byte.MAX_VALUE; i++) {
-            byte encrypted = FNRCipher.encrypt(FNRCodec.BYTE, key, tweak, i);
+            byte encrypted = FNRCipher.encrypt(FNRCodec.BYTE_NP_SIGN, key, tweak, i);
             
-            byte decrypted = FNRCipher.decrypt(FNRCodec.BYTE, key, tweak, encrypted);
+            byte decrypted = FNRCipher.decrypt(FNRCodec.BYTE_NP_SIGN, key, tweak, encrypted);
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testShort() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.SHORT.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -88,7 +97,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testShortNPSign() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.SHORT_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -100,7 +110,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testChar() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.CHAR.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -114,7 +125,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testCharNPSign() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.CHAR_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -126,7 +138,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testInt() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.INT.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -140,7 +153,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testIntNPSign() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.INT_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -153,6 +167,7 @@ public class FNRCodecTest extends FNRTestCase {
         }
     }
 
+    @Test
     public void testFloat() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.FLOAT.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -166,7 +181,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testFloatNPSignExp() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.FLOAT_NP_SIGN_EXP.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -178,7 +194,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testLong() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.LONG.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -192,7 +209,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testLongNPSign() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.LONG_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -204,7 +222,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testDouble() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.DOUBLE.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -218,7 +237,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testDoubleNPSignExp() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.DOUBLE_NP_SIGN_EXP.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -230,7 +250,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testIPv4() throws GeneralSecurityException, UnknownHostException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.IPV4.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -242,7 +263,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testIPv6() throws GeneralSecurityException, UnknownHostException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.IPV6.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -254,9 +276,10 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     @SuppressWarnings("deprecation")
-    public void teseDate() throws GeneralSecurityException {
+    public void testDate() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.DATE.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
 
@@ -267,7 +290,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testBigInteger() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BIGINT_128.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -281,7 +305,8 @@ public class FNRCodecTest extends FNRTestCase {
             assertEquals(i, decrypted);
         }
     }
-    
+
+    @Test
     public void testBigIntegerNPSign() throws GeneralSecurityException {
         FNRKey key = new FNRKey(randomAesKey(), FNRCodec.BIGINT_128_NP_SIGN.getRequiredKeyNumBits());
         FNRTweak tweak = key.generateTweak("alpha");
@@ -292,5 +317,31 @@ public class FNRCodecTest extends FNRTestCase {
             BigInteger decrypted = FNRCipher.decrypt(FNRCodec.BIGINT_128_NP_SIGN, key, tweak, encrypted);
             assertEquals(i, decrypted);
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBigIntegerEncodeWrongData() throws GeneralSecurityException {
+        FNRCodec.BIGINT_128.encode(new BigInteger("2").pow(128));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBigIntegerDecodeWrongData() throws GeneralSecurityException {
+        FNRCodec.BIGINT_128.decode(new byte[17]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBigIntegerNPWrongData() throws GeneralSecurityException {
+        FNRCodec.BIGINT_128_NP_SIGN.decode(new byte[17]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIpv4WrongData() throws GeneralSecurityException {
+        FNRCodec.IPV4.decode(new byte[2]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIpv6WrongData() throws GeneralSecurityException {
+        FNRCodec.IPV6.decode(new byte[2]);
     }
 }

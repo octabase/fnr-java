@@ -57,7 +57,7 @@ public class FNRKey {
 
     public FNRKey(final byte[] aes128Key, int numBits, boolean useBuiltInAesEncryption) throws GeneralSecurityException {
         if (aes128Key == null) {
-            throw new NullPointerException("The aes128Key parameter cannot be null.");
+            throw new NullPointerException("The aes128Key parameter cannot be null");
         }
 
         if (aes128Key.length != 16) {
@@ -91,7 +91,7 @@ public class FNRKey {
 
     public FNRTweak generateTweak(String tweakString) throws GeneralSecurityException {
         if (tweakString == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("The tweakString parameter cannot be null");
         }
 
         return generateTweak(tweakString.getBytes());
@@ -101,6 +101,9 @@ public class FNRKey {
         byte block[] = new byte[FNRCipher.BLOCK_SIZE];
 
         int tweakLen = tweakBytes.length;
+        if (tweakLen == 0) {
+            throw new IllegalArgumentException("The tweakBytes parameter value cannot be empty");
+        }
 
         block[0] = (byte) (tweakLen >> 0 & 0xFF);
         block[1] = (byte) (tweakLen >> 8 & 0xFF);
@@ -149,13 +152,13 @@ public class FNRKey {
         int aRow = elementsPerRow * (sub.a + 1);
         int bRow = elementsPerRow * (sub.b + 1);
 
-        if (sub.type.equals(GenMatrixType.SWAP)) {
+        if (sub.type == GMT_SWAP) {
             for (int i = 0; i < elementsPerRow; i++, aRow++, bRow++) {
                 byte t = vector[a + aRow]; 
                 vector[a + aRow] = vector[a + bRow];
                 vector[a + bRow] = t;
              }
-        } else if (sub.type.equals(GenMatrixType.XOR)) {
+        } else if (sub.type == GMT_XOR) {
             for (int i = 0; i < elementsPerRow; i++, aRow++, bRow++) {
                 vector[a + bRow] ^= vector[a + aRow];
              }
@@ -178,7 +181,7 @@ public class FNRKey {
             int firstNonZero = pwipStream.nextBitsNotAllZero(this, bits, this.numBits - i);
             
             if (firstNonZero > 0) {
-                genMatrix[index].type = GenMatrixType.SWAP;
+                genMatrix[index].type = GMT_SWAP;
                 genMatrix[index].a = (byte) i;
                 genMatrix[index].b = (byte) (i + firstNonZero);
                 index++;
@@ -188,7 +191,7 @@ public class FNRKey {
             
             for (int j = 1; j < (this.numBits - i); j++) {
                 if (bits[j] != 0) {
-                    genMatrix[index].type = GenMatrixType.XOR;
+                    genMatrix[index].type = GMT_XOR;
                     genMatrix[index].a = (byte) i;
                     genMatrix[index].b = (byte) (i + j);
                     index++;
@@ -197,7 +200,7 @@ public class FNRKey {
             
             for (int j = 0; j < i; j++) {
                 if (pwipStream.nextBit(this) != 0) {
-                    genMatrix[index].type = GenMatrixType.XOR;
+                    genMatrix[index].type = GMT_XOR;
                     genMatrix[index].a = (byte) i;
                     genMatrix[index].b = (byte) j;
                     
@@ -235,7 +238,7 @@ public class FNRKey {
         for (GenMatrix m: genMatrix) {
             m.a = 0;
             m.b = 0;
-            m.type = null;
+            m.type = 0;
         }
 
         column = -1;
@@ -289,15 +292,6 @@ public class FNRKey {
     byte getFinalMask() {
         return finalMask;
     }
-
-    int getFullElements() {
-        return fullElements;
-    }
-
-    byte getFinalElementMask() {
-        return finalElementMask;
-    }
-
     public int getNumBits() {
         return numBits;
     }
@@ -322,16 +316,11 @@ public class FNRKey {
         return vector;
     }
 
-    int getElementsPerRow() {
-        return elementsPerRow;
-    }
+    private final static int GMT_SWAP = 1;
+    private final static int GMT_XOR = 2;
     
-    private static enum GenMatrixType {
-        SWAP, XOR;
-    }
-
     private static class GenMatrix {
-        GenMatrixType type;
+        int type;
         byte a;
         byte b;
     };

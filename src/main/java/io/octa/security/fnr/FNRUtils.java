@@ -52,11 +52,11 @@ public class FNRUtils {
     
     public static byte[] createAes128KeyWithPBKDF2(String passphrase, String salt) throws GeneralSecurityException {
         if (passphrase == null || passphrase.length() == 0) {
-            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
+            throw new IllegalArgumentException("The passphrase parameter cannot be null or empty.");
         }
         
         if (salt == null || salt.length() == 0) {
-            throw new NullPointerException("The salt parameter cannot be null or empty.");
+            throw new IllegalArgumentException("The salt parameter cannot be null or empty.");
         }
 
         return createAes128KeyWithPBKDF2(passphrase.getBytes(), salt.getBytes());
@@ -64,11 +64,11 @@ public class FNRUtils {
     
     public static byte[] createAes128KeyWithPBKDF2(final byte[] passphrase, final byte[] salt) throws GeneralSecurityException {
         if (passphrase == null || passphrase.length == 0) {
-            throw new NullPointerException("The passphrase parameter cannot be null or empty.");
+            throw new IllegalArgumentException("The passphrase parameter cannot be null or empty.");
         }
         
         if (salt == null || salt.length == 0) {
-            throw new NullPointerException("The salt parameter cannot be null or empty.");
+            throw new IllegalArgumentException("The salt parameter cannot be null or empty.");
         }
 
         char[] passChars = new char[passphrase.length];
@@ -77,7 +77,7 @@ public class FNRUtils {
             passChars[i] = (char) passphrase[i];
         }
 
-        PBEKeySpec keySpec = new PBEKeySpec(passChars, salt == null ? new byte[0] : salt, 1000, 128);
+        PBEKeySpec keySpec = new PBEKeySpec(passChars, salt, 1000, 128);
         Arrays.fill(passChars, (char) 0);
 
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");

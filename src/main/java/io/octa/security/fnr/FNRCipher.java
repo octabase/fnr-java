@@ -40,7 +40,7 @@ public class FNRCipher {
     final static int BLOCK_SIZE = 16;
     final static byte RND_MARKER = (byte) 0xC0;
     final static byte TWEAK_MARKER = (byte) 0xFF;
-    final static byte[] ROUND_CONST = {0x00, 0x03, 0x0c, 0x0f, 0x30, 0x33, 0x3c};
+    final static byte[] ROUND_CONST = {0x00, 0x03, 0x0C, 0x0F, 0x30, 0x33, 0x3C};
 
     private FNRCipher() {
         
@@ -57,14 +57,6 @@ public class FNRCipher {
     private static <T> T codecOperate(FNRCodec<T> codec, FNRKey key, FNRTweak tweak, T input, boolean enc) throws GeneralSecurityException {
         if (codec == null) {
             throw new NullPointerException("The codec parameter cannot be null.");
-        }
-
-        if (key == null) {
-            throw new NullPointerException("The key parameter cannot be null.");
-        }
-
-        if (tweak == null) {
-            throw new NullPointerException("The tweak parameter cannot be null.");
         }
 
         if (input == null) {
