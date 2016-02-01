@@ -111,4 +111,4 @@ FNR is designed by Sashank Dara (sadara@cisco.com), Scott Fluhrer (sfluhrer@cisc
 
 Java implementation was written by Mehmet Gurevin (mehmet.gurevin@octabase.com)
 
-Copyright (c) 2015-2016, Octabase, Inc. All Rights Reserved.
+Copyright (c) 2015-2016, Octabase, Ltd. All Rights Reserved.

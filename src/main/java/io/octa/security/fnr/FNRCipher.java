@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016, Octabase, Inc. All Rights Reserved.
+ * Copyright (c) 2015-2016, Octabase, Ltd. All Rights Reserved.
  *
  * FNR Cipher is a Java implementation for Flexible Naor and Reingold encryption scheme.
  * 
